@@ -1,0 +1,177 @@
+body {
+    background-image: url('/background.svg');
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* HeaderLogEntry styles */
+.header-log-entry {
+    display: flex;
+    gap: 25rem;
+    position: relative;
+    flex-direction: row;
+    align-items: center;
+    padding: 20px;
+    background-color: rgba(211, 219, 232, 0.5);
+    border-bottom: 1px solid #ddd;
+}
+.header-element {
+    margin: 0 10px;
+}
+#library-title {
+    margin-top: 15px;
+    font-family: 'Lato', sans-serif;
+    font-size: 48px;
+    font-weight: normal;
+    letter-spacing: 2px;
+    color: #33658A;
+}
+
+#library-title hr {
+    color : #33658A;
+}
+
+/* LogEntryNav styles */
+.log-entry-nav {
+    background: #33658A;
+    padding: 15px 0;
+}
+
+.nav-log-entry {
+    display: flex;
+    margin-left: 20px;
+    gap: 8rem;
+}
+
+.nav-log-entry button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    padding: 10px 15px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 8px;
+}
+
+.log-entry-button {
+    color: #fff;
+    font-family: 'Lato', sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+/* Date styles */
+.date-display {
+    position: absolute;
+    top: 305px;
+    right: 20px;
+    font-family: 'Lato', sans-serif;
+    font-size: 25px;
+    color: #F26419;
+}
+
+/* Home - Student Kiosk styles */
+.title-purpose {
+    background-color: rgb(189, 206, 218);
+    display: flex;
+    margin-top: 10px;
+    gap: 20px;
+}
+
+.library-purpose {
+    max-height: 80px;
+    max-width: 80px;
+    margin-left: 40px;
+    margin-top: 10px;
+}
+
+.library-purpose-text {
+    font-family: 'Lato', sans-serif;
+    font-size: 32px;
+    color: #17496E;
+    line-height: 1.5;
+    letter-spacing: 7%;
+}
+
+.home-content {
+    display: flex;
+    gap: 20px;
+    padding: 10px;
+}
+
+/* Home Card styles */
+.home-card {
+    width: 25%;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.home-card-button-group {
+    display: flex;
+    justify-content: center;
+    gap: 75px;
+    margin-top: 20px;
+}
+.home-card-button {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 40px;
+    border: 1px solid #B3B3B3;
+    background-color: transparent;
+    color: #F26419;
+    font-family: 'Lato', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+.home-input-field {
+    width: 100%;
+    padding: 10px 15px;
+    border: 1px solid #F26419;
+    background-color: #FFF4E6;
+
+    color: #B07506;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+
+    border-radius: 20px;
+    box-sizing: border-box;
+
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.home-input-dropdown {
+    display: block;
+    width: 100%;
+}
+
+.home-submit-button {
+    margin-top: 30px;
+    margin-bottom: 8px;
+    margin-left: 10px;
+    width: 95%;
+    gap: 10px;
+
+    padding: 10px 20px;
+    border: none;
+    background-color: #F26419;
+    color: #fff;
+    font-family: 'Lato', sans-serif;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 20px;
+}
+
+/* Table Styles */
