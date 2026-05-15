@@ -25,6 +25,10 @@ function LogEntryNav() {
                     <img src="/MyStatus.svg" alt="Status" />
                     {myStatus}
                 </button>
+
+                <button className="admin-button" onClick={() => navigate('/admin-login')}>
+                    <img src="/AdminButton.svg" alt="Admin" />
+                </button>
             </nav>
         </div>
     );

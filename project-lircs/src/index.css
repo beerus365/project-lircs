@@ -2,6 +2,9 @@ body {
     background-image: url('/background.svg');
     background-size: cover;
     background-repeat: no-repeat;
+
+    margin: 0;
+    padding: 0;
 }
 
 /* Landing Page styles */
@@ -14,6 +17,8 @@ body {
 
     background-color: rgba(51, 101, 138, 0.3);
     font-family: 'Lato', sans-serif;
+
+    cursor: pointer;
 }
 
 .landing-title {
@@ -98,6 +103,15 @@ body {
     font-family: 'Lato', sans-serif;
     font-size: 25px;
     font-weight: bold;
+}
+
+.admin-button {
+    margin-left: auto;
+    margin-right: 30px;
+}
+
+.nav-log-entry .admin-button:hover {
+    transform: scale(1.1);
 }
 
 /* Date styles */
@@ -504,4 +518,625 @@ th, td {
 
 .modal-submit-btn:hover {
     transform: scale(1.05);
+}
+
+/* My Status Log In styles */
+.my-status-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 70vh;
+}
+
+.my-status-login-container {
+  position: relative;
+  width: 30%;
+  background-color: #FFFFFF;
+  border-radius: 20px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;      
+  justify-content: center;
+  gap: 2px;
+}
+
+.profile-icon {
+  width: 80px;
+  height: 80px;
+  margin-bottom: 5px;
+}
+
+.student-id-label,
+.student-id-input,
+.my-status-login-button {
+  width: 90%;
+}
+
+.title {
+    font-family: 'Lato', sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    color: #F26419;
+    margin-bottom: 5px;
+}
+
+.my-status-login-prompt {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: #5F6368;
+    margin-top: 5px;
+    margin-bottom: 20px;
+}
+
+.student-id-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    color: #5F6368;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.student-id-input {
+    padding: 10px 15px;
+    border: 1px solid #F26419;
+    background-color: #FFF4E6;
+    color: #B07506;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    border-radius: 20px;
+    box-sizing: border-box;
+}
+
+.my-status-login-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  border: none;
+  background-color: #F26419;
+  color: #fff;
+  font-family: 'Lato', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 20px;
+  box-shadow: 0px 4px 8px rgba(242, 100, 25, 0.4);
+  transition: all 0.3s ease;
+}
+
+.my-status-login-button:hover {
+  box-shadow: 0px 6px 12px rgba(242, 100, 25, 0.6);
+  transform: translateY(-2px);
+}
+
+/* My Status styles */
+.my-status-main-container {
+    background-color: #F0F0F0;
+    border-radius: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.my-status-info-container {
+    background-color: rgba(242, 100, 25, 0.4);
+    padding: 15px;
+    border-radius: 20px;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    gap: 2px;
+
+    box-shadow: 0px 4px 8px rgba(34, 30, 28, 0.4);
+}
+
+.my-status-text-group {
+    display: flex;
+    flex-direction: column;
+    margin-left: 40px;
+    gap: 2px;
+}
+
+.my-status-info {
+    margin: 0;
+
+    font-family: 'Lato', sans-serif;
+    color: #FFFFFF;
+}
+
+.profile-icon {
+    margin-left: 40px;
+    width: 90px;
+    height: 90px;
+}
+
+#student-name {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+#student-details {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.sign-out-button {
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: 30px;
+    padding: 20px 30px;
+    border: none;
+    background-color: #F26419;
+    color: #fff;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.sign-out-button:hover {
+    background-color: #F26419;
+    color: #fff;
+
+    transform: scale(1.05);
+}
+
+/* My Status Card styles */
+.my-status-cards-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-left: 30px;
+    margin-right: 30px;
+}
+
+.my-status-card {
+    background-color: rgba(255, 255, 255, 0.8);
+    text-align: center;
+    width: 20%;
+    border-radius: 20px;
+    border: 1px solid #33658A;
+    padding: 20px;
+    gap: 10px;
+}
+
+.card-title {
+    font-family: 'Lato', sans-serif;
+    font-size: 20px;
+    font-weight: normal;
+    color: #5F6368;
+    margin-bottom: 0;
+}
+
+/* Current Loan Table styles */
+.current-loan-table-container {
+    width: 97%;
+    display: block;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #B3B3B3;
+    border-radius: 20px; 
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+    margin-top: 20px;
+}
+
+.my-status-table-title {
+    font-family: 'Lato', sans-serif;
+    font-size: 24px;
+    font-weight: lighter;
+    color: #B3B3B3;
+    margin-top: 0%;
+    margin-bottom: 10px;
+}
+
+.current-loan-table thead th{
+    color: #5F6368;
+    padding: 20px;
+    border-bottom: 1px solid #5F6368;
+    border-right: none;
+}
+
+.current-loan-table tbody td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: center; 
+    border-right: none;
+    border-bottom: none;
+}
+
+/* Borrowing History Table styles */
+.borrowing-history-table-container {
+    width: 99.5%;
+    display: block;
+    background-color: rgba(255, 255, 255, 0.8);
+    border: 1px solid #B3B3B3;
+    border-radius: 20px;
+    padding: 20px 0px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+#borrowing-history-title {
+    margin-left: 20px;
+    margin-top: 0%;
+    margin-bottom: 30px;
+}
+
+.borrowing-history-table-container thead th{
+    background-color: #5C84A1;
+    color: #FFFFFF;
+    font-size: large;
+    padding: 20px;
+    border-bottom: 1px solid #5F6368;
+    border-right: 1px solid #B3B3B3;
+}
+
+.borrowing-history-table-container tbody td {
+    padding: 15px;
+    border-bottom: 1px solid #ddd;
+    text-align: center; 
+    border-right: 1px solid #B3B3B3;
+    border-bottom: none;
+}
+
+/* Admin Page Log In styles */
+.admin-login-container {
+    width: 30%;
+    background-color: #FFFFFF;
+    padding: 50px;
+
+    justify-content: center;
+    text-align: center;
+
+    border-radius: 30px;
+}
+
+.admin-login-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(85vh - 150px); 
+}
+
+.admin-input-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.admin-input {
+    padding: 15px;
+    border-radius: 25px;
+    border: 2px solid #F26419;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+
+    background-color: #FFFFFF;
+    font-size: 15px;
+    color: rgb(181, 128, 30);
+}
+
+.admin-login-label {
+    font-family: 'Lato', sans-serif;
+    font-size: 32px;
+    font-weight: bold;
+    color: #33658A;
+
+    margin-top: 5px
+}
+
+.admin-login-button {
+    background-color: #F26419;
+    padding: 15px 25px;
+    border-radius: 10px;
+    border: none;
+    margin-top: 30px;
+
+    font-size: 20px;
+    font-weight: bold;
+    color: #FFFFFF;
+
+    transition: all 0.3s ease;
+}
+
+.admin-login-button:hover {
+    transform: scale(1.05);
+}
+
+/* Admin header syles */
+.header-wrapper {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+}
+
+.header-container {
+  display: flex;
+  flex-direction: row;
+  padding: 20px 10px;
+  background-color: #FFFFFF;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.admin-profile-logo {
+  margin-top: 30px;
+  width: 50px;
+  height: 50px;
+}
+
+.admin-profile-container {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  margin-left: auto;
+  margin-right: 80px;
+}
+
+#admin-profile-label {
+  font-weight: lighter;
+  margin-top: 30px;
+  margin-bottom: 5px;
+}
+
+#admin-profile-name {
+  margin-top: 5px;
+}
+
+.admin-profile-info {
+  color: #F26419;
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+}
+
+/* Admin sidebar styles */
+.sidebar-container {
+  position: sticky;
+  top: 0;
+  height: 100%;  
+  width: 280px;
+  min-width: 280px;
+  flex-shrink: 0;
+  padding: 20px;
+  background-color: #33658A;
+  border-top-right-radius: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.sidebar-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.inner-sidebar-button {
+  display: flex;
+  flex-direction: row;
+  padding: 10px;
+  align-items: center;
+  gap: 15px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+}
+
+.inner-sidebar-button:hover {
+    background-color: rgba(242, 100, 25, 0.3);
+    border: 1px solid #F26419;
+    border-radius: 20px;
+}
+
+.sidebar-button-name {
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  color: #FFFFFF;
+  margin: 0;
+}
+
+.sidebar-logout-button {
+    margin-top: auto;
+    margin-bottom: 30px;
+    padding: 10px;
+    border-radius: 10px;
+
+    background-color: #F26419;
+    border: none;
+    color: #FFFFFF;
+
+    font-size: 16px;
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+}
+.sidebar-logout-button:hover {
+    transform: scale(1.05);
+}
+
+.sidebar-label {
+  font-family: 'Lato', sans-serif;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.72);
+  margin-top: 16px;
+  margin-bottom: 15px;
+}
+.sidebar-label:first-of-type {
+  margin-top: 40px; 
+}
+
+/* Admin layout styles */
+.admin-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.admin-body {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 90px); 
+  overflow: hidden;
+}
+
+/* Admin main content styles */
+.admin-main-content {
+  flex: 1;
+  padding: 20px 0 0 0;
+  overflow-y: auto; 
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+/* Admin Main Dashboard styles */
+.admin-greetings-card {
+    background-color: #FFFFFF;
+    padding: 25px 40px;
+    border-radius: 20px;
+    margin: 0;
+}
+
+.admin-greetings {
+    color: #33658A;
+    margin-bottom: 15px;
+    margin-top: auto;
+}
+
+.admin-overview-label {
+    margin-top: auto;
+    margin-bottom: auto;
+    color: #5F6368;
+}
+
+.admin-dashboard-main-container {
+    background-color: #F0F0F0;
+    padding: 20px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+}
+
+
+.overdue-books-list {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+
+    background-color: #E6C384;
+    border-radius: 40px;
+    padding: 5px 20px;
+}
+
+.overdue-warning-message {
+    display: flex;
+    flex-direction: row;
+    color: #F26419;
+    font-size: 16px;
+}
+
+.overdue-books-total {
+    font-weight: bold;
+}
+
+.library-summary-cards-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.library-summary-cards-container .library-summary-cards:nth-child(1) {
+    border-top: 8px solid #33658A;
+}
+.library-summary-cards-container .library-summary-cards:nth-child(2) {
+    border-top: 8px solid #F26419;
+}
+.library-summary-cards-container .library-summary-cards:nth-child(3) {
+    border-top: 8px solid rgba(137, 9, 8, 0.91);
+}
+.library-summary-cards-container .library-summary-cards:nth-child(4) {
+    border-top: 8px solid #578633;
+}
+
+.library-summary-cards {
+    overflow: hidden;
+    width: 17%;
+    padding: 30px 30px;
+    text-align: left;
+
+    background-color: #FFFFFF;
+    border-radius: 20px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.25);
+
+    transition: all 0.3s ease;
+}
+.library-summary-cards:nth-child(1):hover {
+    transform: scale(1.05);
+    background-color: #33658A;
+}
+.library-summary-cards:nth-child(2):hover {
+    transform: scale(1.05);
+    background-color: #F26419;
+}
+.library-summary-cards:nth-child(3):hover {
+    transform: scale(1.05);
+    background-color: rgba(137, 9, 8, 0.91);
+}
+.library-summary-cards:nth-child(4):hover {
+    transform: scale(1.05);
+    background-color: #578633;
+}
+.library-summary-cards:nth-child(1):hover h1,
+.library-summary-cards:nth-child(1):hover p {
+    color: #FFFFFF;
+}
+.library-summary-cards:nth-child(2):hover h1,
+.library-summary-cards:nth-child(2):hover p {
+    color: #FFFFFF;
+}
+.library-summary-cards:nth-child(3):hover h1,
+.library-summary-cards:nth-child(3):hover p {
+    color: #FFFFFF;
+}
+.library-summary-cards:nth-child(4):hover h1,
+.library-summary-cards:nth-child(4):hover p {
+    color: #FFFFFF;
+}
+
+.library-summary-cards h1 {
+    font-size: 50px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+.library-summary-cards p {
+    margin-top: auto;
+    margin-bottom: 5px;
+
+    color: #B3B3B3;
+}
+.library-summary-cards p:nth-child(3) {
+    font-size: 15px;
+}
+
+.library-summary-cards:nth-child(1) h1 {
+    color: #33658A;
+}
+.library-summary-cards:nth-child(2) h1 {
+    color: #F26419;
+}
+.library-summary-cards:nth-child(3) h1 {
+    color: rgba(137, 9, 8, 0.91);
+}
+.library-summary-cards:nth-child(4) h1 {
+    color: #578633;
 }
