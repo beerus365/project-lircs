@@ -30,9 +30,30 @@ function CirculationPage() {
                                 <button>Look Up</button>
                             </span>
                         </div>
+                        <PendingRequestTable></PendingRequestTable>
                     </div>
                 </main>
             </div>
+        </div>
+    )
+}
+
+function PendingRequestTable() {
+    return (
+        <div className='circulation-table-container'>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date Requested</th>
+                        <th>Name</th>
+                        <th>Designation</th>
+                        <th>Book Title</th>
+                        <th>Accession No.</th>
+                        <th>Call No.</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
         </div>
     )
 }
