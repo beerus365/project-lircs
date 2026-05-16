@@ -15,7 +15,7 @@ function AdminPageSidebar() {
                         <h2 className="sidebar-button-name">DASHBOARD</h2>
                     </button>
 
-                    <button className="inner-sidebar-button">
+                    <button className="inner-sidebar-button" onClick={() => navigate("/circulation")}>
                         <img src='/CirculationLogo.svg' alt="Circulation Logo" className="sidebar-button-logo"></img>
                         <h2 className="sidebar-button-name">CIRCULATION</h2>
                     </button>
@@ -24,17 +24,17 @@ function AdminPageSidebar() {
                 <h1 className="sidebar-label">COLLECTION</h1>
 
                 <div className="sidebar-buttons">
-                    <button className="inner-sidebar-button">
+                    <button className="inner-sidebar-button" onClick={() => navigate("/accessioning")}>
                         <img src='/AccessioningLogo.svg' alt="Accessioning Logo" className="sidebar-button-logo"></img>
                         <h2 className="sidebar-button-name">ACCESSIONING</h2>
                     </button>
 
-                    <button className="inner-sidebar-button">
+                    <button className="inner-sidebar-button" onClick={() => navigate("/cataloging")}>
                         <img src='/CatalogingLogo.svg' alt="Cataloging Logo" className="sidebar-button-logo"></img>
                         <h2 className="sidebar-button-name">CATALOGING</h2>
                     </button>
 
-                    <button className="inner-sidebar-button">
+                    <button className="inner-sidebar-button" onClick={() => navigate("/weeding")}>
                         <img src='/WeedingLogo.svg' alt="Weeding Logo" className="sidebar-button-logo"></img>
                         <h2 className="sidebar-button-name">WEEDING</h2>
                     </button>

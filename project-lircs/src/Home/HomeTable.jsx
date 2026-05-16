@@ -2,37 +2,42 @@ import { useEffect, useState } from 'react';
 import { supabase } from '../../client/databaseClient.js';
 
 function HomeTable() {
-    const [users, setUsers] = useState([]);
+    const [logs, setLogs] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null); 
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        fetchUsers();
+        fetchLogs();
     }, []);
 
-    const fetchUsers = async () => {
+    const fetchLogs = async () => {
         try {
             setLoading(true);
-
             const { data, error } = await supabase
-                .from('user')
+                .from('logbook')
                 .select(`
                     *,
-                    students (
-                        grade_level,
-                        section
-                    ),
-                    teachers (
-                        department
+                    user (
+                        user_id,
+                        user_type,
+                        first_name,
+                        middle_name,
+                        last_name,
+                        students (
+                            grade_level,
+                            section
+                        ),
+                        teachers (
+                            department
+                        )
                     )
                 `);
 
             if (error) {
                 setError(error.message);
             } else {
-                setUsers(data || []);
+                setLogs(data || []);
             }
-
         } catch (err) {
             setError(err.message);
         } finally {
@@ -40,13 +45,8 @@ function HomeTable() {
         }
     };
 
-    if (loading) {
-        return <div className="home-table"><p>Loading...</p></div>;
-    }
-
-    if (error) {
-        return <div className="home-table"><p>Error: {error}</p></div>;
-    }
+    if (loading) return <div className="home-table"><p>Loading...</p></div>;
+    if (error) return <div className="home-table"><p>Error: {error}</p></div>;
 
     return (
         <div className="home-table">
@@ -57,48 +57,46 @@ function HomeTable() {
                         <th>Time In</th>
                         <th>Role</th>
                         <th>Name</th>
-                        <th>Grade & Section / Department</th>
+                        <th>Designation</th>
                         <th>Purpose</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {users.length > 0 ? (
-                        users.map((user) => (
-                            <tr key={user.user_id}>
-                                <td>
-                                    {user.date
-                                        ? new Date(user.date).toLocaleDateString()
-                                        : '-'}
-                                </td>
-
-                                <td>{user.created_at || '-'}</td>
-
-                                <td>{user.user_type || '-'}</td>
-
-                                <td>
-                                    {[
-                                        user.first_name,
-                                        user.middle_name,
-                                        user.last_name
-                                    ]
-                                        .filter(Boolean)
-                                        .join(' ') || '-'}
-                                </td>
-
-                                <td>
-                                    {user.user_type === 'HS' || user.user_type === 'GS'
-                                        ? `${user.students?.grade_level || ''} - ${user.students?.section || ''}`
-                                        : user.user_type === 'F'
-                                        ? user.teachers?.department || '-'
-                                        : '-'}
-                                </td>
-
-                                <td>{user.purpose || '-'}</td>
-                            </tr>
-                        ))
+                    {logs.length > 0 ? (
+                        logs.map((log) => {
+                            const user = log.user;
+                            return (
+                                <tr key={log.logbook_number}>
+                                    <td>
+                                        {log.date_check_in
+                                            ? new Date(log.date_check_in).toLocaleDateString()
+                                            : '-'}
+                                    </td>
+                                    <td>{log.time_check_in || '-'}</td>
+                                    <td>{user?.user_type || '-'}</td>
+                                    <td>
+                                        {[
+                                            user?.first_name,
+                                            user?.middle_name,
+                                            user?.last_name
+                                        ]
+                                            .filter(Boolean)
+                                            .join(' ') || '-'}
+                                    </td>
+                                    <td>
+                                        {user?.user_type === 'Student'
+                                            ? `${user?.students?.grade_level || ''} - ${user?.students?.section || ''}`
+                                            : user?.user_type === 'Faculty'
+                                            ? user?.teachers?.department || '-'
+                                            : '-'}
+                                    </td>
+                                    <td>{log.purpose || '-'}</td>
+                                </tr>
+                            );
+                        })
                     ) : (
                         <tr>
-                            <td colSpan="6" style={{ textAlign: 'center' }}>No users found</td>
+                            <td colSpan="6" style={{ textAlign: 'center' }}>No logs found</td>
                         </tr>
                     )}
                 </tbody>
