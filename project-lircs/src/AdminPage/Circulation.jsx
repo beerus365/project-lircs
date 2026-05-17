@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import AdminPageHeader from './AdminPageHeader';
 import AdminPageSidebar from './AdminPageSidebar';
-import CirculationModalPage from './CirculationModalPage';
+import CirculationModalPage, { ProceedCheckoutModal } from './CirculationModalPage';
 import { supabase } from '../../client/databaseClient';
 
 function CirculationPage() {
@@ -74,46 +74,69 @@ function CirculationPage() {
 
 function PendingRequestTable({ search }) {
     const [pendingTotal, setPendingTotal] = useState([]);
-    const [selectedRecord, setSelectedRecord] = useState(null);
-    
+    const [selectedRecord, setSelectedRecord] = useState(null);      // for Check History modal
+    const [checkoutRecord, setCheckoutRecord] = useState(null);      // for Approve/Checkout modal
+
     useEffect(() => {
-        const fetchPending = async () => {
-            const { data, error } = await supabase
-                .from('borrowers_record')
-                .select(`
-                    *,
-                    user(
-                        first_name,
-                        middle_name,
-                        last_name,
-                        user_type,
-                        students(
-                            grade_level,
-                            section
-                        ),
-                        teachers(
-                            department
-                        )
-                    ),
-                    books(
-                        title,
-                        accession_num,
-                        call_num
-                    )
-                `)
-                .eq('borrow_status', 'Pending');
-
-                console.log('data: ', data)
-                console.log('error: ', error) 
-
-            if(error) {
-                console.error('Error fetching records: ', error)
-            } else {
-                setPendingTotal(data)
-            }
-        };
         fetchPending();
     }, []);
+
+    const fetchPending = async () => {
+        const { data, error } = await supabase
+            .from('borrowers_record')
+            .select(`
+                *,
+                user(
+                    first_name,
+                    middle_name,
+                    last_name,
+                    user_type,
+                    students(grade_level, section),
+                    teachers(department)
+                ),
+                books(title, accession_num, call_num)
+            `)
+            .eq('borrow_status', 'Pending');
+
+        if (error) {
+            console.error('Error fetching records: ', error);
+        } else {
+            setPendingTotal(data);
+        }
+    };
+
+    const handleApprove = async (recordId) => {
+        
+        console.log('Approve clicked, recordId:', recordId);
+        console.log('checkoutRecord:', checkoutRecord);
+
+        const { error } = await supabase
+            .from('borrowers_record')
+            .update({ borrow_status: 'Active' })
+            .eq('borrowers_id', recordId);
+
+        if (error) {
+            console.error('Error approving record:', error);
+            alert('Failed to approve. Please try again.');
+        } else {
+            setPendingTotal((prev) => prev.filter((r) => r.borrowers_id !== recordId));
+            setCheckoutRecord(null);
+        }
+    };
+
+    const handleReject = async (recordId) => {
+        const { error } = await supabase
+            .from('borrowers_record')
+            .update({ borrow_status: 'Rejected' })
+            .eq('borrowers_id', recordId);
+
+        if (error) {
+            console.error('Error rejecting record:', error);
+            alert('Failed to reject. Please try again.');
+        } else {
+            setPendingTotal((prev) => prev.filter((r) => r.borrowers_id !== recordId));
+        }
+    };
 
     const filteredRecords = pendingTotal.filter((record) => {
         const userId = record.user_id?.toString() || "";
@@ -135,7 +158,6 @@ function PendingRequestTable({ search }) {
                             <th>Action</th>
                         </tr>
                     </thead>
-
                     <tbody>
                         {filteredRecords.length === 0 ? (
                             <tr>
@@ -143,7 +165,7 @@ function PendingRequestTable({ search }) {
                             </tr>
                         ) : (
                             filteredRecords.map((record) => (
-                                <tr key={record.id}>
+                                <tr key={record.borrowers_id}>
                                     <td>{record.request_date}</td>
                                     <td>
                                         {record.user?.first_name} {record.user?.middle_name} {record.user?.last_name}
@@ -157,17 +179,27 @@ function PendingRequestTable({ search }) {
                                     <td>{record.books?.accession_num}</td>
                                     <td>{record.books?.call_num}</td>
                                     <td className='pending-buttons-group'>
-
-                                        <button 
-                                            className='pending-buttons' 
+                                        <button
+                                            className='pending-buttons'
                                             id='check-history-button'
                                             onClick={() => setSelectedRecord(record)}
                                         >
                                             Check History
                                         </button>
-
-                                        <button className='pending-buttons' id='approve-button'>Approve</button>
-                                        <button className='pending-buttons' id='reject-button'>Reject</button>
+                                        <button
+                                            className='pending-buttons'
+                                            id='approve-button'
+                                            onClick={() => setCheckoutRecord(record)}  
+                                        >
+                                            Approve
+                                        </button>
+                                        <button
+                                            className='pending-buttons'
+                                            id='reject-button'
+                                            onClick={() => handleReject(record.borrowers_id)}
+                                        >
+                                            Reject
+                                        </button>
                                     </td>
                                 </tr>
                             ))
@@ -176,15 +208,24 @@ function PendingRequestTable({ search }) {
                 </table>
             </div>
 
+            {/* Check History Modal */}
             {selectedRecord && (
                 <CirculationModalPage
                     record={selectedRecord}
                     onClose={() => setSelectedRecord(null)}
                 />
             )}
-        </>
 
-    )
+            {/* Approve / Checkout Modal */}
+            {checkoutRecord && (
+                <ProceedCheckoutModal
+                    record={checkoutRecord}
+                    onClose={() => setCheckoutRecord(null)}
+                    onConfirm={() => handleApprove(checkoutRecord.borrowers_id)}
+                />
+            )}
+        </>
+    );
 }
 
 function ActiveBorrowingTable({ search }) {
@@ -215,7 +256,7 @@ function ActiveBorrowingTable({ search }) {
                         call_num
                     )
                 `)
-                .eq('borrow_status', 'Active');
+                .in('borrow_status', ['Approve', 'Overdue']);
 
             if (error) {
                 console.error('Error fetching active records: ', error);
@@ -253,7 +294,7 @@ function ActiveBorrowingTable({ search }) {
                         </tr>
                     ) : (
                         filteredRecords.map((record) => (
-                            <tr key={record.id}>
+                            <tr key={record.borrowers_id}>
                                 <td>{record.borrow_date}</td>
                                 <td>{record.due_date}</td>
                                 <td>
@@ -267,7 +308,8 @@ function ActiveBorrowingTable({ search }) {
                                 <td>{record.books?.title}</td>
                                 <td>{record.borrow_status}</td>
                                 <td>
-                                    {/* Add action buttons here as needed */}
+                                    <button>Extend</button>
+                                    <button>Lost</button>
                                 </td>
                             </tr>
                         ))
