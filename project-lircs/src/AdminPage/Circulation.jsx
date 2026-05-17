@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import AdminPageHeader from './AdminPageHeader';
 import AdminPageSidebar from './AdminPageSidebar';
-import CirculationModalPage, { ProceedCheckoutModal } from './CirculationModalPage';
+import CirculationModalPage, { ProceedCheckoutModal, ExtendBookBorrowModal, LostBookModal, AddBorrowerModal } from './CirculationModalPage';
 import { supabase } from '../../client/databaseClient';
 
 function CirculationPage() {
     const [activeTab, setActiveTab] = useState('pending');
+    const [addBorrower, setAddBorrower] = useState(false);
     const [search, setSearch] = useState("");
 
     return (
@@ -45,7 +46,12 @@ function CirculationPage() {
                                 </button>
 
                             </span>
-                            <button className='add-borrower-button'>+ Add Borrower</button>
+                            <button 
+                                className='add-borrower-button'
+                                onClick={() => setAddBorrower(true)}    
+                            >
+                                + Add Borrower
+                            </button>
                         </span>
 
                         <div className='circulation-search-container'>
@@ -74,8 +80,8 @@ function CirculationPage() {
 
 function PendingRequestTable({ search }) {
     const [pendingTotal, setPendingTotal] = useState([]);
-    const [selectedRecord, setSelectedRecord] = useState(null);      // for Check History modal
-    const [checkoutRecord, setCheckoutRecord] = useState(null);      // for Approve/Checkout modal
+    const [selectedRecord, setSelectedRecord] = useState(null);      
+    const [checkoutRecord, setCheckoutRecord] = useState(null);     
 
     useEffect(() => {
         fetchPending();
@@ -230,6 +236,8 @@ function PendingRequestTable({ search }) {
 
 function ActiveBorrowingTable({ search }) {
     const [activeTotal, setActiveTotal] = useState([]);
+    const [extendRecord, setExtendRecord] = useState(null); 
+    const [lostRecord, setLostRecord] = useState(null); 
 
     useEffect(() => {
         const fetchActive = async () => {
@@ -238,25 +246,13 @@ function ActiveBorrowingTable({ search }) {
                 .select(`
                     *,
                     user(
-                        first_name,
-                        middle_name,
-                        last_name,
-                        user_type,
-                        students(
-                            grade_level,
-                            section
-                        ),
-                        teachers(
-                            department
-                        )
+                        first_name, middle_name, last_name, user_type,
+                        students(grade_level, section),
+                        teachers(department)
                     ),
-                    books(
-                        title,
-                        accession_num,
-                        call_num
-                    )
+                    books(title, accession_num, call_num)
                 `)
-                .in('borrow_status', ['Approve', 'Overdue']);
+                .in('borrow_status', ['Approve', 'Overdue']);  
 
             if (error) {
                 console.error('Error fetching active records: ', error);
@@ -267,57 +263,80 @@ function ActiveBorrowingTable({ search }) {
         fetchActive();
     }, []);
 
-    // FIX: use own state (activeTotal) instead of undefined pendingTotal
     const filteredRecords = activeTotal.filter((record) => {
         const userId = record.user_id?.toString() || "";
         return userId.includes(search);
     });
 
     return (
-        <div className='circulation-table-container'>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Date Borrowed</th>
-                        <th>Due Date</th>
-                        <th>Name</th>
-                        <th>Designation</th>
-                        <th>Book Title</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredRecords.length === 0 ? (
+        <>
+            <div className='circulation-table-container'>
+                <table>
+                    <thead>
                         <tr>
-                            <td colSpan="7">No active borrowing records found.</td>
+                            <th>Date Borrowed</th>
+                            <th>Due Date</th>
+                            <th>Name</th>
+                            <th>Designation</th>
+                            <th>Book Title</th>
+                            <th>Status</th>
+                            <th>Action</th>
                         </tr>
-                    ) : (
-                        filteredRecords.map((record) => (
-                            <tr key={record.borrowers_id}>
-                                <td>{record.borrow_date}</td>
-                                <td>{record.due_date}</td>
-                                <td>
-                                    {record.user?.first_name} {record.user?.middle_name} {record.user?.last_name}
-                                </td>
-                                <td>
-                                    {record.user?.user_type === 'Student'
-                                        ? `Grade ${record.user?.students?.grade_level} - ${record.user?.students?.section}`
-                                        : record.user?.teachers?.department}
-                                </td>
-                                <td>{record.books?.title}</td>
-                                <td>{record.borrow_status}</td>
-                                <td>
-                                    <button>Extend</button>
-                                    <button>Lost</button>
-                                </td>
-                            </tr>
-                        ))
-                    )}
-                </tbody>
-            </table>
-        </div>
-    )
+                    </thead>
+                    <tbody>
+                        {filteredRecords.length === 0 ? (
+                            <tr><td colSpan="7">No active borrowing records found.</td></tr>
+                        ) : (
+                            filteredRecords.map((record) => (
+                                <tr key={record.borrowers_id}>
+                                    <td>{record.borrow_date}</td>
+                                    <td>{record.due_date}</td>
+                                    <td>{record.user?.first_name} {record.user?.middle_name} {record.user?.last_name}</td>
+                                    <td>
+                                        {record.user?.user_type === 'Student'
+                                            ? `Grade ${record.user?.students?.grade_level} - ${record.user?.students?.section}`
+                                            : record.user?.teachers?.department}
+                                    </td>
+                                    <td>{record.books?.title}</td>
+                                    <td>{record.borrow_status}</td>
+                                    <td>
+                                        <button onClick={() => setExtendRecord(record)}>Extend</button>
+                                        <button onClick={() => setLostRecord(record)}>Lost</button>
+                                    </td>
+                                </tr>
+                            ))
+                        )}
+                    </tbody>
+                </table>
+            </div>
+
+            {extendRecord && (
+                <ExtendBookBorrowModal
+                    record={extendRecord}
+                    onClose={() => setExtendRecord(null)}
+                    onExtended={(updatedRecord) => {
+                        setActiveTotal((prev) =>
+                            prev.map((r) =>
+                                r.borrowers_id === updatedRecord.borrowers_id ? updatedRecord : r
+                            )
+                        );
+                        setExtendRecord(null);
+                    }}
+                />
+            )}
+
+            {lostRecord && (
+                <LostBookModal
+                    record={lostRecord}
+                    onClose={() => setLostRecord(null)}
+                    onConfirmed={(borrowersId) => {
+                        setActiveTotal((prev) => prev.filter((r) => r.borrowers_id !== borrowersId));
+                        setLostRecord(null);
+                    }}
+                />
+            )}
+        </>
+    );
 }
 
 function ReturningTable({ search }) {

@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react"
 import { supabase } from '../../client/databaseClient';
 
-
-
 function CheckHistoryModal({ record, onClose }) {
   const [showCheckout, setShowCheckout] = useState(false);
   const [unpaidFines, setUnpaidFines] = useState(0);
@@ -264,6 +262,175 @@ function SuccessfulBookBorrowModal({ onClose }) {
           <h1>Successfully borrowed a</h1>
           <h1>Book!</h1>
         </span>
+      </div>
+    </div>
+  )
+}
+
+export function ExtendBookBorrowModal({ record, onClose, onExtended }) {
+    const [borrowingPeriod, setBorrowingPeriod] = useState(null);
+    const [showCalendar, setShowCalendar] = useState(false);
+    const [customDate, setCustomDate] = useState(null);
+
+    const getExtendedDueDate = () => {
+        const base = record?.due_date ? new Date(record.due_date) : new Date();
+
+        if (borrowingPeriod === 'custom' && customDate) return customDate;
+        if (borrowingPeriod) {
+            const extended = new Date(base);
+            extended.setDate(extended.getDate() + borrowingPeriod);
+            return extended;
+        }
+        return null;
+    };
+
+    const getDisplayDate = () => {
+        const date = getExtendedDueDate();
+        return date
+            ? date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+            : null;
+    };
+
+    const handleConfirm = async () => {
+        if (!borrowingPeriod) {
+            alert('Please select an extension period first.');
+            return;
+        }
+
+        const newDueDate = getExtendedDueDate();
+        const formattedDueDate = newDueDate.toISOString().split('T')[0];
+
+        console.log('record:', record);
+        console.log('borrowers_id:', record?.borrowers_id);
+        console.log('new due date:', formattedDueDate);
+
+        const { data, error } = await supabase
+            .from('borrowers_record')
+            .update({
+                due_date: formattedDueDate,
+                borrow_status: 'Approve',
+            })
+            .eq('borrowers_id', record?.borrowers_id)
+            .select()
+            .single();
+
+        console.log('error:', error);   // ← what does this say?
+        console.log('data:', data);     // ← is this null or an object?
+
+        if (error) {
+            console.error('Supabase error:', error);
+            alert('Failed to extend. Please try again.');
+        } else {
+            onExtended(data);
+        }
+    };
+
+    return (
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+            <div className="circulation-modal-container">
+                <span className="proceed-checkout-modal-header">
+                    <h3>EXTEND DUE DATE</h3>
+                </span>
+                <span className="circulation-approve-message-container">
+                    <span className="approve-message">
+                        <p>Extending <strong>{record?.books?.title}</strong> for {record?.user?.first_name} {record?.user?.last_name}</p>
+                        <p>Current due date: <strong>{record?.due_date}</strong></p>
+                    </span>
+                </span>
+                <div className="circulation-borrowing-period-container">
+                    <h3>EXTEND PERIOD</h3>
+                    <span className="borrowing-period-buttons">
+                        <button className={borrowingPeriod === 5 ? 'active' : ''} onClick={() => { setBorrowingPeriod(5); setShowCalendar(false); setCustomDate(null); }}>5 Days</button>
+                        <button className={borrowingPeriod === 7 ? 'active' : ''} onClick={() => { setBorrowingPeriod(7); setShowCalendar(false); setCustomDate(null); }}>7 Days</button>
+                        <button className={borrowingPeriod === 'custom' ? 'active' : ''} onClick={() => { setBorrowingPeriod('custom'); setShowCalendar(!showCalendar); }}>+ Custom</button>
+                        {showCalendar && (
+                            <input className="custom-calendar" type="date"
+                                min={record?.due_date}  
+                                onChange={(e) => { setCustomDate(new Date(e.target.value)); setBorrowingPeriod('custom'); setShowCalendar(false); }}
+                            />
+                        )}
+                    </span>
+                    <h3>NEW DUE DATE</h3>
+                    <span className="circulation-due-date-container">
+                        <p>{getDisplayDate() || 'No extension date selected'}</p>
+                    </span>
+                </div>
+                <span className="circulation-modal-buttons">
+                    <button onClick={onClose}>← Back</button>
+                    <button onClick={handleConfirm}>Confirm Extension</button>
+                </span>
+            </div>
+        </div>
+    );
+}
+
+export function LostBookModal({ record, onClose, onConfirmed }) {
+
+    const handleConfirm = async () => {
+        
+        const { error: statusError } = await supabase
+            .from('borrowers_record')
+            .update({ 
+                borrow_status: 'Lost',
+                amount: (record?.amount || 0) + 50,  
+            })
+            .eq('borrowers_id', record?.borrowers_id);
+
+        if (statusError) {
+            console.error('Supabase error:', statusError);
+            alert('Failed to update. Please try again.');
+            return;
+        }
+
+        onConfirmed(record.borrowers_id);
+    };
+
+    return (
+        <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+            <div className="circulation-modal-container">
+                <div className="circulation-modal-header">
+                    <h3>MARK AS LOST</h3>
+                    <p>This action cannot be undone</p>
+                </div>
+
+                <div className="lost-modal-details">
+                    <p>Are you sure you want to mark this book as lost?</p>
+                    <div className="success-modal-row">
+                        <span>Borrower</span>
+                        <strong>{record?.user?.first_name} {record?.user?.last_name}</strong>
+                    </div>
+                    <div className="success-modal-row">
+                        <span>Book Title</span>
+                        <strong>{record?.books?.title}</strong>
+                    </div>
+                    <div className="success-modal-row">
+                        <span>Accession No.</span>
+                        <strong>{record?.books?.accession_num}</strong>
+                    </div>
+                    <div className="success-modal-row">
+                        <span>Violation Fee</span>
+                        <strong style={{ color: 'red' }}>₱50.00</strong>   {/* ← show the fee */}
+                    </div>
+                    <div className="success-modal-row">
+                        <span>Total Amount Due</span>
+                        <strong style={{ color: 'red' }}>₱{(record?.amount || 0) + 50}.00</strong>  {/* ← show total */}
+                    </div>
+                </div>
+
+                <span className="circulation-modal-buttons">
+                    <button onClick={onClose}>← Cancel</button>
+                    <button id="reject-button" onClick={handleConfirm}>Confirm Lost</button>
+                </span>
+            </div>
+        </div>
+    );
+}
+
+export function AddBorrowerModal() {
+  return(
+    <div className="modal-layout">
+      <div className="circulation-modal-container">
+
       </div>
     </div>
   )
