@@ -73,6 +73,11 @@ function CirculationPage() {
                         {activeTab === 'returning' && <ReturningTable search={search} />}
                     </div>
                 </main>
+                {addBorrower && (
+                    <AddBorrowerModal
+                        onClose={() => setAddBorrower(false)}
+                    />
+                )}
             </div>
         </div>
     )
@@ -341,6 +346,7 @@ function ActiveBorrowingTable({ search }) {
 
 function ReturningTable({ search }) {
     const [returningTotal, setReturningTotal] = useState([]);
+    const [returnRecord, setReturnRecord] = useState(null);
 
     useEffect(() => {
         const fetchReturning = async () => {
@@ -349,25 +355,13 @@ function ReturningTable({ search }) {
                 .select(`
                     *,
                     user(
-                        first_name,
-                        middle_name,
-                        last_name,
-                        user_type,
-                        students(
-                            grade_level,
-                            section
-                        ),
-                        teachers(
-                            department
-                        )
+                        first_name, middle_name, last_name, user_type,
+                        students(grade_level, section),
+                        teachers(department)
                     ),
-                    books(
-                        title,
-                        accession_num,
-                        call_num
-                    )
+                    books(title, accession_num, call_num, copies)
                 `)
-                .eq('borrow_status', 'Returning');
+                .in('borrow_status', ['Approve', 'Overdue']); 
 
             if (error) {
                 console.error('Error fetching returning records: ', error);
@@ -378,7 +372,40 @@ function ReturningTable({ search }) {
         fetchReturning();
     }, []);
 
-    // FIX: use own state (returningTotal) instead of undefined pendingTotal
+    const handleReturn = async (record) => {
+        const today = new Date().toISOString().split('T')[0];
+
+        // Step 1: Update borrow record — set status to Returned and return_date to today
+        const { error: returnError } = await supabase
+            .from('borrowers_record')
+            .update({
+                borrow_status: 'Returned',
+                return_date: today,
+            })
+            .eq('borrowers_id', record.borrowers_id);
+
+        if (returnError) {
+            console.error('Return error:', returnError);
+            alert('Failed to return. Please try again.');
+            return;
+        }
+
+        // Step 2: Increment copies in books table
+        const { error: incrementError } = await supabase
+            .from('books')
+            .update({ copies: record.books.copies + 1 })
+            .eq('book_id', record.book_id);
+
+        if (incrementError) {
+            console.error('Increment error:', incrementError);
+            alert('Book returned but failed to update copies.');
+            return;
+        }
+
+        // Step 3: Remove from returning table locally
+        setReturningTotal((prev) => prev.filter((r) => r.borrowers_id !== record.borrowers_id));
+    };
+
     const filteredRecords = returningTotal.filter((record) => {
         const userId = record.user_id?.toString() || "";
         return userId.includes(search);
@@ -405,12 +432,10 @@ function ReturningTable({ search }) {
                         </tr>
                     ) : (
                         filteredRecords.map((record) => (
-                            <tr key={record.id}>
+                            <tr key={record.borrowers_id}>
                                 <td>{record.borrow_date}</td>
                                 <td>{record.due_date}</td>
-                                <td>
-                                    {record.user?.first_name} {record.user?.middle_name} {record.user?.last_name}
-                                </td>
+                                <td>{record.user?.first_name} {record.user?.middle_name} {record.user?.last_name}</td>
                                 <td>
                                     {record.user?.user_type === 'Student'
                                         ? `Grade ${record.user?.students?.grade_level} - ${record.user?.students?.section}`
@@ -419,7 +444,12 @@ function ReturningTable({ search }) {
                                 <td>{record.books?.title}</td>
                                 <td>{record.borrow_status}</td>
                                 <td>
-                                    {/* Add action buttons here as needed */}
+                                    <button
+                                        id="approve-button"
+                                        onClick={() => handleReturn(record)}
+                                    >
+                                        Return
+                                    </button>
                                 </td>
                             </tr>
                         ))
@@ -427,7 +457,7 @@ function ReturningTable({ search }) {
                 </tbody>
             </table>
         </div>
-    )
+    );
 }
 
 export default CirculationPage;

@@ -1258,3 +1258,47 @@ body {
 .successful-borrow-container h1 {color: var(--blue-primary); font-size: 40px; font-weight: bolder; margin-bottom: auto; margin-top: 20px;}
 .successful-borrow-container img {width: 150px; height: 150px;}
 .successful-borrow-text-wrapper {display: flex; align-items: center; flex-direction: column;}
+
+.add-borrower-header {display: flex; border-bottom: 3px solid var(--blue-primary);}
+.add-borrower-header h3 {margin-top: auto; margin-bottom: 5px; color: var(--blue-primary); font-size: 24px; letter-spacing: 3px;}
+
+.add-borrower-input-container {margin-top: 30px; display: flex; flex-direction: column; gap: 10px;}
+.add-borrower-input-container label {color: var(--blue-primary);}
+.add-borrower-input-container input {width: 80%; padding: 10px; border-radius: 20px; border: 1px solid var(--orange-primary); color: var(--orange-text); background-color: var(--orange-bg); box-shadow: var(--shadow-md);}
+.add-borrower-input-container input:nth-child(2) {width: 90%;}
+
+.add-borrower-designation-container {margin-top: 20px;}
+.add-borrower-designation-container select {margin-top: 10px;}
+
+.add-borrower-name-container {display: flex; flex-direction: row; gap: 15px; margin-top: 20px;}
+.add-borrower-name-wrapper {display: flex; flex-direction: column; gap: 10px}
+
+.add-borrower-input-container select {width: 60%; padding: 10px; border-radius: 20px; border: 1px solid var(--orange-primary); background-color: var(--orange-bg); color: var(--orange-text); box-shadow: var(--shadow-md)}
+.add-borrower-modal-button-container {display: flex; justify-content: flex-end; margin-top: 60px; gap: 10px;}
+.add-borrower-modal-button {padding: 10px; border-radius: 10px; border: none; cursor: pointer; box-shadow: var(--shadow-md);}
+.add-borrower-modal-button:nth-child(1) {background-color: var(--gray-border); color: var(--blue-primary); font-size: 16px; font-weight: bold; }
+.add-borrower-modal-button:nth-child(1):hover {background-color: #777575; color: var(--white);}
+.add-borrower-modal-button:nth-child(2) {background-color: var(--orange-primary); color: var(--white); font-size: 16px; font-weight: bold; }
+.add-borrower-modal-button:nth-child(2):hover {background-color: #ac4813;}
+
+.search-book-modal-container {padding: 20px; margin-top: 30px; border-radius: 10px; background-color: var(--gray-bg);}
+.search-book-modal-container h3 {margin-top: auto; color: var(--blue-primary);}
+.search-input-modal-container {display: flex; gap: 10px; margin-bottom: 20px;}
+.search-input-modal-container input {width: 60%; padding: 10px; border-radius: 20px; background-color: var(--orange-bg); border: 1px solid var(--orange-primary); color: var(--orange-text); box-shadow: var(--shadow-md);}
+.search-input-modal-container button {padding: 10px 20px; border-radius: 20px; border: none;  background-color: var(--orange-primary); color: white; font-weight: bold; cursor: pointer;}
+.search-input-modal-container button:hover {background-color: #ac4813;}
+
+.book-modal-table-container {margin-top: 30px; width: 100%;}
+.book-modal-table-container table {width: 100%; border-collapse: collapse;}
+.book-modal-table-container h4 {font-size: 20px; font-weight: lighter; color: var(--blue-primary) !important; margin-bottom: 15px;}
+.book-modal-table-container thead th {padding: 10px; background-color: var(--blue-light); color: var(--white);}
+
+.confirm-borrow-profile-container {display: flex; flex-direction: row; padding: 30px; border-radius: 10px; gap: 20px; background-color: var(--gray-bg); margin-top: 30px;}
+.confirm-borrow-profile-container img {width: 80px; height: 80px;}
+.confirm-borrow-profile-info {margin-top: 15px;}
+.confirm-borrow-profile-info h4 {color: var(--blue-primary) !important; font-size: 20px;}
+.confirm-borrow-profile-info p {font-size: 14px; margin-top: 5px;}
+
+.circulation-table-modal-container {width: 100%; margin-top: 20px; border-collapse: collapse;}
+.circulation-table-modal-container thead th {background-color: var(--blue-light); color: var(--white); padding: 10px; }
+
